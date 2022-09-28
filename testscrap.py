@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import re
+import pandas as pd
 
 
 driver_path = "/home/louis/Desktop/drivers/geckodriver"
@@ -28,20 +29,30 @@ first_house_link.click()
 # print(installation_list)
 find_all_ths = driver.find_elements(By.XPATH, "//th[@class='classified-table__header']")
 find_all_trs = driver.find_elements(By.XPATH, "//td[@class='classified-table__data']")
-list3 = []
+list1 = []
+list2 = []
+
 for i in range(len(find_all_ths)):
-    list3.append([find_all_ths[i].text, find_all_trs[i].text])
+    list1.append(find_all_ths[i].text)
+for i in range(len(find_all_trs)):
+    list2.append(find_all_trs[i].text)
+dict_house = {key:value for (key,value) in zip(list1, list2)}
 
-print(list3)
+print(dict_house)
 
-houses = []
-i = 0
-while i < 2:
-    house_attributes = []
-    swimingpool = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div[1]/div/div/main/div[3]/div[7]/div/div/div/div/div[2]/table/tbody/tr[5]/td")))
-    house_attributes.append(swimingpool.text)
-    houses.append(house_attributes)
-    next_link = driver.find_element(By.XPATH, "/html/body/div[1]/div[1]/div/div/main/div[1]/div[2]/div/div/div[1]/div/div[1]/ul/li[2]/a/span[2]")
-    next_link.click()
-    i += 1
-print(houses)
+
+
+df = pd.DataFrame(dict_house,index=[0]) 
+df.to_csv('house_infos.csv')
+
+# houses = []
+# i = 0
+# while i < 2:
+#     house_attributes = []
+#     swimingpool = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div[1]/div/div/main/div[3]/div[7]/div/div/div/div/div[2]/table/tbody/tr[5]/td")))
+#     house_attributes.append(swimingpool.text)
+#     houses.append(house_attributes)
+#     next_link = driver.find_element(By.XPATH, "/html/body/div[1]/div[1]/div/div/main/div[1]/div[2]/div/div/div[1]/div/div[1]/ul/li[2]/a/span[2]")
+#     next_link.click()
+#     i += 1
+# print(houses)
